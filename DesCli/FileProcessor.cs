@@ -10,8 +10,22 @@ namespace DesCli
     {
         public byte[] ReadInput(string path)
         {
-            // TODO: Implement file reading.
-            return Array.Empty<byte>();
+            if (string.IsNullOrEmpty(path))
+                throw new ArgumentException("Path cannot be null or empty.", nameof(path));
+
+            // Support "-" as stdin for CLI usage
+            if (path == "-")
+            {
+                using var stdin = Console.OpenStandardInput();
+                using var ms = new MemoryStream();
+                stdin.CopyTo(ms);
+                return ms.ToArray();
+            }
+
+            if (!File.Exists(path))
+                throw new FileNotFoundException($"Input file not found: {path}", path);
+
+            return File.ReadAllBytes(path);
         }
 
         public void WriteOutput(string path, byte[] data)

@@ -5,6 +5,8 @@ VisualStudioVersion = 17.14.36616.10 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesCli", "DesCli\DesCli.csproj", "{0D808045-CF7B-49EE-88CB-14EE00B07A37}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesCli.Tests", "DesCli.Tests\DesCli.Tests.csproj", "{C30B8D29-246B-4610-831B-FA6F898AA9D3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{0D808045-CF7B-49EE-88CB-14EE00B07A37}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D808045-CF7B-49EE-88CB-14EE00B07A37}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D808045-CF7B-49EE-88CB-14EE00B07A37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C30B8D29-246B-4610-831B-FA6F898AA9D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C30B8D29-246B-4610-831B-FA6F898AA9D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C30B8D29-246B-4610-831B-FA6F898AA9D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C30B8D29-246B-4610-831B-FA6F898AA9D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
