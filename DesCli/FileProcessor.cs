@@ -30,7 +30,48 @@ namespace DesCli
 
         public void WriteOutput(string path, byte[] data)
         {
-            // TODO: Implement file writing.
+            if (string.IsNullOrEmpty(path))
+                throw new ArgumentException("Path cannot be null or empty.", nameof(path));
+            if (data is null)
+                throw new ArgumentNullException(nameof(data));
+
+            // Support "-" as stdout for CLI usage
+            if (path == "-")
+            {
+                using var stdout = Console.OpenStandardOutput();
+                stdout.Write(data, 0, data.Length);
+                stdout.Flush();
+                return;
+            }
+
+            // Ensure parent directory exists (if any)
+            var directory = Path.GetDirectoryName(path);
+            if (string.IsNullOrEmpty(directory))
+            {
+                directory = Directory.GetCurrentDirectory();
+            }
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
+            // Write atomically: write to temp file in same directory then move
+            var tempFile = Path.Combine(directory, Path.GetRandomFileName());
+            try
+            {
+                File.WriteAllBytes(tempFile, data);
+                // Overwrite target if it exists
+                File.Move(tempFile, path, overwrite: true);
+            }
+            catch
+            {
+                // If move fails, attempt to remove temp file then rethrow
+                if (File.Exists(tempFile))
+                {
+                    try { File.Delete(tempFile); } catch { /* swallow */ }
+                }
+                throw;
+            }
         }
     }
 }
