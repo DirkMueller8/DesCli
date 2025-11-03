@@ -8,7 +8,7 @@ namespace DesCli
 {
     public class DesKeyScheduler : IKeyScheduler
     {
-        // PC-1 (64 -> 56)
+        // Table 3.13.: PC-1 (64 -> 56)
         private static readonly int[] PC1 = new int[]
         {
             57,49,41,33,25,17,9,
@@ -27,7 +27,7 @@ namespace DesCli
             1,1,2,2,2,2,2,2,1,2,2,2,2,2,2,1
         };
 
-        // PC-2 (56 -> 48)
+        // Table 3.14.:PC-2 (56 -> 48)
         private static readonly int[] PC2 = new int[]
         {
             14,17,11,24,1,5,
@@ -46,6 +46,8 @@ namespace DesCli
 
             // Build 56-bit key after PC-1
             var key56 = new int[56];
+
+            // Apply PC-1
             for (int i = 0; i < 56; i++)
             {
                 int srcBitPos = PC1[i] - 1; // 0-based
@@ -62,6 +64,7 @@ namespace DesCli
 
             var roundKeys = new byte[16][];
 
+            // Generate 16 round keys
             for (int round = 0; round < 16; round++)
             {
                 // Left rotate C and D by LeftShifts[round]
@@ -76,6 +79,8 @@ namespace DesCli
 
                 // Apply PC-2 to get 48-bit subkey
                 var subkeyBits = new int[48];
+
+                // Apply PC-2
                 for (int i = 0; i < 48; i++)
                 {
                     int src = PC2[i] - 1; // 0-based index into cd
@@ -97,11 +102,14 @@ namespace DesCli
             return roundKeys;
         }
 
+
+        // Left rotate a 28-bit array
         private static int[] LeftRotate28(int[] arr, int shift)
         {
             var res = new int[28];
             for (int i = 0; i < 28; i++)
             {
+                // Wrap around using modulo
                 res[i] = arr[(i + shift) % 28];
             }
             return res;

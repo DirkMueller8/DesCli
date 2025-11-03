@@ -50,6 +50,7 @@ namespace DesCli
                 Console.WriteLine($"Using default key: {keyHex}");
             }
 
+            // Convert hex key to byte array
             byte[] key;
             try
             {
@@ -63,13 +64,16 @@ namespace DesCli
 
             if (key.Length != 8)
             {
-                Console.Error.WriteLine($"Key must be 8 bytes (16 hex chars). Provided length: {key.Length} bytes.");
+                Console.Error.WriteLine($"Key must be 8 bytes (16 hex characters). Provided length: {key.Length} bytes.");
                 return;
             }
 
             try
             {
+                // Initialize DES cipher
                 var cipher = new DesCipher();
+
+                // Convert input text to bytes
                 var plainBytes = Encoding.UTF8.GetBytes(inputText);
 
                 // Show plaintext hex for educational purposes (grouped)
@@ -79,21 +83,28 @@ namespace DesCli
 
                 // Compute and show PKCS#7 padded plaintext (what DES will actually encrypt)
                 var padLen = 8 - (plainBytes.Length % 8);
+                // If already multiple of 8, add a full block of padding
                 if (padLen == 0) padLen = 8;
                 var paddedPlain = new byte[plainBytes.Length + padLen];
+
+                // Copy original plaintext bytes
                 Buffer.BlockCopy(plainBytes, 0, paddedPlain, 0, plainBytes.Length);
+
+                // Add PKCS#7 padding bytes
                 for (int i = 0; i < padLen; i++) paddedPlain[plainBytes.Length + i] = (byte)padLen;
 
                 Console.WriteLine();
                 Console.WriteLine("Padded plaintext (hex, grouped):");
                 Console.WriteLine(ToGroupedHex(paddedPlain));
 
+                // Encrypt
                 var cipherBytes = cipher.Encrypt(plainBytes, key);
 
                 Console.WriteLine();
                 Console.WriteLine("Encrypted (hex, grouped):");
                 Console.WriteLine(ToGroupedHex(cipherBytes));
 
+                // Decrypt
                 var decrypted = cipher.Decrypt(cipherBytes, key);
                 var decryptedText = Encoding.UTF8.GetString(decrypted);
 
@@ -112,10 +123,13 @@ namespace DesCli
             }
         }
 
+        // Helper method to convert byte array to grouped hex string
         private static string ToGroupedHex(byte[] bytes, int bytesPerGroup = 4, int groupsPerLine = 4)
         {
             if (bytes is null || bytes.Length == 0) return string.Empty;
             var sb = new StringBuilder();
+
+            // Iterate through bytes and format
             for (int i = 0; i < bytes.Length; i++)
             {
                 sb.AppendFormat("{0:X2}", bytes[i]);
@@ -123,10 +137,10 @@ namespace DesCli
                 if (i == bytes.Length - 1)
                     break;
 
-                // single space between bytes
+                // Single space between bytes
                 sb.Append(' ');
 
-                // extra space between groups
+                // Extra space between groups
                 if ((i + 1) % bytesPerGroup == 0)
                     sb.Append(' ');
 

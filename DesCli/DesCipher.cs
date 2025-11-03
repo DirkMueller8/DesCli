@@ -12,6 +12,8 @@ namespace DesCli
         // Standard DES Initial Permutation table (1-based indices)
         private static readonly int[] IP = new int[]
         {
+            // Table 3.1. 64 bits read from top to bottom, left to right:
+            // 58 -> position 1, 50 -> position 2, ..., 7 -> position 64
             58,50,42,34,26,18,10,2,
             60,52,44,36,28,20,12,4,
             62,54,46,38,30,22,14,6,
@@ -22,7 +24,7 @@ namespace DesCli
             63,55,47,39,31,23,15,7
         };
 
-        // Final Permutation (inverse of IP)
+        // Table 3.2. Final Permutation (inverse of IP)
         private static readonly int[] FP = new int[]
         {
             40,8,48,16,56,24,64,32,
@@ -35,7 +37,7 @@ namespace DesCli
             33,1,41,9,49,17,57,25
         };
 
-        // Expansion table (32 -> 48)
+        // Expansion table 3.3 (32 -> 48)
         private static readonly int[] E = new int[]
         {
             32,1,2,3,4,5,
@@ -48,7 +50,7 @@ namespace DesCli
             28,29,30,31,32,1
         };
 
-        // Permutation P (32 bits)
+        // Table 3.12.: Permutation P (32 bits) of the S-box output
         private static readonly int[] P = new int[]
         {
             16,7,20,21,29,12,28,17,
@@ -57,13 +59,16 @@ namespace DesCli
             19,13,30,6,22,11,4,25
         };
 
-        // Standard DES S-boxes (S1..S8), each 4x16 flattened row-major
+        // Core of DES providing confusion
+        // Table 3.4.: Standard DES S-boxes (S1..S8), each 4x16 flattened row-major
         private static readonly int[,] S1 = {
             {14,4,13,1,2,15,11,8,3,10,6,12,5,9,0,7},
             {0,15,7,4,14,2,13,1,10,6,12,11,9,5,3,8},
             {4,1,14,8,13,6,2,11,15,12,9,7,3,10,5,0},
             {15,12,8,2,4,9,1,7,5,11,3,14,10,0,6,13}
         };
+
+        // Table 3.5.: S2   
         private static readonly int[,] S2 = {
             {15,1,8,14,6,11,3,4,9,7,2,13,12,0,5,10},
             {3,13,4,7,15,2,8,14,12,0,1,10,6,9,11,5},

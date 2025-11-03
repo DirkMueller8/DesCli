@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,10 +14,10 @@ namespace DesCli
             if (string.IsNullOrEmpty(path))
                 throw new ArgumentException("Path cannot be null or empty.", nameof(path));
 
-            // Support "-" as stdin for CLI usage
+            // Special-case "-" (stdin) — read all bytes but do not close the console stream.
             if (path == "-")
             {
-                using var stdin = Console.OpenStandardInput();
+                var stdin = Console.OpenStandardInput();
                 using var ms = new MemoryStream();
                 stdin.CopyTo(ms);
                 return ms.ToArray();
@@ -35,11 +36,44 @@ namespace DesCli
             if (data is null)
                 throw new ArgumentNullException(nameof(data));
 
-            // Support "-" as stdout for CLI usage
+            // Use streaming implementation to avoid duplicating logic.
+            using var ms = new MemoryStream(data, writable: false);
+            WriteOutputStream(path, ms);
+        }
+
+        // Streaming API
+
+        public Stream ReadInputStream(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+                throw new ArgumentException("Path cannot be null or empty.", nameof(path));
+
+            // Return console input stream for "-" (do NOT dispose the returned stream here)
             if (path == "-")
             {
-                using var stdout = Console.OpenStandardOutput();
-                stdout.Write(data, 0, data.Length);
+                return Console.OpenStandardInput();
+            }
+
+            if (!File.Exists(path))
+                throw new FileNotFoundException($"Input file not found: {path}", path);
+
+            // FileStream returned; caller is responsible for disposing it
+            return File.OpenRead(path);
+        }
+
+        public void WriteOutputStream(string path, Stream data)
+        {
+            if (string.IsNullOrEmpty(path))
+                throw new ArgumentException("Path cannot be null or empty.", nameof(path));
+            if (data is null)
+                throw new ArgumentNullException(nameof(data));
+
+            // If writing to stdout, copy directly (do not close console stream)
+            if (path == "-")
+            {
+                var stdout = Console.OpenStandardOutput();
+                // copy from current position to end
+                data.CopyTo(stdout);
                 stdout.Flush();
                 return;
             }
@@ -59,7 +93,14 @@ namespace DesCli
             var tempFile = Path.Combine(directory, Path.GetRandomFileName());
             try
             {
-                File.WriteAllBytes(tempFile, data);
+                // Ensure data stream position is at a readable point (do not rewind if caller
+                // intentionally provided a specific position).
+                using (var fs = File.Create(tempFile))
+                {
+                    data.CopyTo(fs);
+                    fs.Flush(true);
+                }
+
                 // Overwrite target if it exists
                 File.Move(tempFile, path, overwrite: true);
             }
