@@ -7,6 +7,11 @@ using System.Threading.Tasks;
 
 namespace DesCli
 {
+
+
+
+
+
     public class DesCipher : IDesCipher
     {
         // Standard DES Initial Permutation table (1-based indices)

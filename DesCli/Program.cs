@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using System.Security.Cryptography;
 
 namespace DesCli
 {
@@ -21,16 +22,20 @@ namespace DesCli
         private static void RunInteractiveDemo()
         {
             // Illustrative header box
-            Console.WriteLine("*************************************************************");
-            Console.WriteLine("*        Data Encryption Standard (DES) Interactive Demo    *");
-            Console.WriteLine("*                                                           *"  );
-            Console.WriteLine("*        This demo                                          *");
-            Console.WriteLine("*        - asks the plaintext from the user,                *");
-            Console.WriteLine("*        - converts it to hexadecimal representation,       *");
-            Console.WriteLine("*        - applies padding if necessary,                    *");
-            Console.WriteLine("*        - encrypts the plaintext to ciphertext, and        *");
-            Console.WriteLine("*        - decrypts the ciphertext to plaintext again.      *");
-            Console.WriteLine("*************************************************************");
+            Console.WriteLine("***************************************************************");
+            Console.WriteLine("*      Data Encryption Standard (DES) Interactive Demo        *");
+            Console.WriteLine("*                                                             *");
+            Console.WriteLine("*      This application is manually coded solution of         *");
+            Console.WriteLine("*      the DES using FIPS PUB 46 and the book                 *");
+            Console.WriteLine("*      'Understanding Cryptography' by Paar, Plezl, Güneysu   *");
+            Console.WriteLine("*                                                             *");
+            Console.WriteLine("*      This demo                                              *");
+            Console.WriteLine("*      - asks the plaintext from the user encoded in UTF-8    *");
+            Console.WriteLine("*      - converts it to hexadecimal representation            *");
+            Console.WriteLine("*      - applies padding if necessary                         *");
+            Console.WriteLine("*      - encrypts the plaintext to ciphertext, and            *");
+            Console.WriteLine("*      - decrypts the ciphertext to plaintext again.          *");
+            Console.WriteLine("***************************************************************");
             Console.WriteLine();
 
             Console.WriteLine("Enter a line of text (UTF-8). Press Enter to submit:");
@@ -42,6 +47,7 @@ namespace DesCli
                 return;
             }
 
+            Console.WriteLine();
             Console.Write("Enter 16-hex key (or press Enter to use default 0123456789ABCDEF): ");
             var keyHex = Console.ReadLine();
             if (string.IsNullOrWhiteSpace(keyHex))
@@ -97,12 +103,46 @@ namespace DesCli
                 Console.WriteLine("Padded plaintext (hex, grouped):");
                 Console.WriteLine(ToGroupedHex(paddedPlain));
 
-                // Encrypt
+                // Encrypt (manual implementation)
                 var cipherBytes = cipher.Encrypt(plainBytes, key);
 
                 Console.WriteLine();
                 Console.WriteLine("Encrypted (hex, grouped):");
                 Console.WriteLine(ToGroupedHex(cipherBytes));
+
+                // --- Comparison: manual implementation vs .NET DES (same mode/padding) ---
+                try
+                {
+                    using var sysDes = DES.Create();
+                    sysDes.Mode = CipherMode.ECB;
+                    sysDes.Padding = PaddingMode.PKCS7;
+                    sysDes.Key = key;
+
+                    var systemCipherBytes = sysDes.CreateEncryptor().TransformFinalBlock(plainBytes, 0, plainBytes.Length);
+
+                    var manualB64 = Convert.ToBase64String(cipherBytes);
+                    var systemB64 = Convert.ToBase64String(systemCipherBytes);
+
+                    Console.WriteLine();
+                    Console.WriteLine("Electronic Code Block (ECB) + PKCS7 is for padding");
+                    Console.WriteLine("Comparison (Base64):");
+
+                    var label1 = "Encrypted data, manually coded (this application):";
+                    var label2 = "Encrypted by .NET System DES library:";
+                    var label3 = "Match between the two approaches:";
+                    var width = Math.Max(label1.Length, Math.Max(label2.Length, label3.Length));
+
+                    Console.WriteLine($"{label1.PadRight(width)} {manualB64}");
+                    Console.WriteLine($"{label2.PadRight(width)} {systemB64}");
+
+                    var isMatch = string.Equals(manualB64, systemB64, StringComparison.Ordinal);
+                    Console.WriteLine($"{label3.PadRight(width)} {isMatch}");
+                }
+                catch (Exception ex)
+                {
+                    Console.Error.WriteLine($"System DES comparison failed: {ex.Message}");
+                }
+                // --- end comparison ---
 
                 // Decrypt
                 var decrypted = cipher.Decrypt(cipherBytes, key);
