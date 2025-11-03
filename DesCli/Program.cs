@@ -124,7 +124,7 @@ namespace DesCli
                     var systemB64 = Convert.ToBase64String(systemCipherBytes);
 
                     Console.WriteLine();
-                    Console.WriteLine("Electronic Code Block (ECB) + PKCS7 is for padding");
+                    Console.WriteLine("Electronic Code Block (ECB) + PKCS7 for padding");
                     Console.WriteLine("Comparison (Base64):");
 
                     var label1 = "Encrypted data, manually coded (this application):";
