@@ -18,7 +18,7 @@ The algorithm uses PKCS#7 padding padding to 16 bytes (DES needs 8-byte blocks) 
 
 The algorithm is schematically described by the following block diagram:  
 
-![Alt text](/Images/DES_Diagram.png) 
+![Alt text](/DesCli/Images/DES_Diagram.png) 
 
 ### Architecture of Application ###  
 The modular architecture is implemented from the following hierarchy:  
