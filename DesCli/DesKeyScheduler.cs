@@ -39,6 +39,7 @@ namespace DesCli
             44,49,39,56,34,53,
             46,42,50,36,29,32
         };
+
         public byte[][] GenerateRoundKeys(byte[] key)
         {
             if (key is null) throw new ArgumentNullException(nameof(key));

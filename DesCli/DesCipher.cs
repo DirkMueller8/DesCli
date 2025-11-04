@@ -7,11 +7,6 @@ using System.Threading.Tasks;
 
 namespace DesCli
 {
-
-
-
-
-
     public class DesCipher : IDesCipher
     {
         // Standard DES Initial Permutation table (1-based indices)
@@ -116,6 +111,8 @@ namespace DesCli
             {7,11,4,1,9,12,14,2,0,6,10,13,15,3,5,8},
             {2,1,14,7,4,10,8,13,15,12,9,0,3,5,6,11}
         };
+
+        // Encrypts the given plaintext using DES with the provided key
         public byte[] Encrypt(byte[] plaintext, byte[] key)
         {
             if (plaintext is null) throw new ArgumentNullException(nameof(plaintext));
@@ -126,14 +123,20 @@ namespace DesCli
             int padLen = 8 - (plaintext.Length % 8);
             if (padLen == 0) padLen = 8;
             var padded = new byte[plaintext.Length + padLen];
+
+            // Copy original plaintext
             Buffer.BlockCopy(plaintext, 0, padded, 0, plaintext.Length);
+
+            // Add PKCS#7 padding bytes
             for (int i = 0; i < padLen; i++) padded[plaintext.Length + i] = (byte)padLen;
 
+            // Generate round keys
             var keyScheduler = new DesKeyScheduler();
             var roundKeys = keyScheduler.GenerateRoundKeys(key); // 16 subkeys of 6 bytes each
 
             var output = new byte[padded.Length];
 
+            // Process each 8-byte block
             for (int offset = 0; offset < padded.Length; offset += 8)
             {
                 // Take one 8-byte block
@@ -149,7 +152,7 @@ namespace DesCli
                 Array.Copy(permuted, 0, L, 0, 4);
                 Array.Copy(permuted, 4, R, 0, 4);
 
-                // 16 rounds
+                // Execute 16 rounds
                 for (int round = 0; round < 16; round++)
                 {
                     var newL = new byte[4];
@@ -183,6 +186,9 @@ namespace DesCli
 
             return output;
         }
+
+
+        // Decrypts the given ciphertext using DES with the provided key
         public byte[] Decrypt(byte[] ciphertext, byte[] key)
         {
             if (ciphertext is null) throw new ArgumentNullException(nameof(ciphertext));
@@ -196,6 +202,7 @@ namespace DesCli
 
             var output = new byte[ciphertext.Length];
 
+            // Process each 8-byte block
             for (int offset = 0; offset < ciphertext.Length; offset += 8)
             {
                 var block = new byte[8];
@@ -261,6 +268,7 @@ namespace DesCli
 
             return result;
         }
+
         public byte[] InitialPermutation(byte[] block)
         {
             if (block is null)
@@ -285,6 +293,7 @@ namespace DesCli
 
             return output;
         }
+
         public byte[] FinalPermutation(byte[] block)
         {
             {
@@ -309,6 +318,7 @@ namespace DesCli
                 return output;
             }
         }
+
         public byte[] Feistel(byte[] right, byte[] subkey)
         {
             if (right is null) throw new ArgumentNullException(nameof(right));
@@ -350,6 +360,7 @@ namespace DesCli
 
             return output;
         }
+
         public byte[] SBoxSubstitution(byte[] input)
         {
             if (input is null) throw new ArgumentNullException(nameof(input));

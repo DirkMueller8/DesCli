@@ -29,6 +29,7 @@ namespace DesCli
             return File.ReadAllBytes(path);
         }
 
+
         public void WriteOutput(string path, byte[] data)
         {
             if (string.IsNullOrEmpty(path))
@@ -41,8 +42,8 @@ namespace DesCli
             WriteOutputStream(path, ms);
         }
 
-        // Streaming API
 
+        // Streaming API
         public Stream ReadInputStream(string path)
         {
             if (string.IsNullOrEmpty(path))

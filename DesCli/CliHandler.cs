@@ -9,7 +9,7 @@ namespace DesCli
     // Handles command-line interface for DES encryption/decryption
 
     // Main responsibilities:
-    // - Parse  CLI switches/positionals
+    // - Parse CLI switches/positionals
     // - Resolve the encryption key (hex string or key file)
     // - Read input bytes (supports "-" for stdin)
     // - Call desCipher.Encrypt or desCipher.Decrypt
