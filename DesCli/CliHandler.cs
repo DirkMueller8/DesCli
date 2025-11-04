@@ -1,23 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DesCli
 {
+    // Handles command-line interface for DES encryption/decryption
+
+    // Main responsibilities:
+    // - Parse  CLI switches/positionals
+    // - Resolve the encryption key (hex string or key file)
+    // - Read input bytes (supports "-" for stdin)
+    // - Call desCipher.Encrypt or desCipher.Decrypt
+    // - Write output(supports "-" for stdout)
+    // - On error print a message and usage.
+
     public class CliHandler
     {
         private readonly IDesCipher desCipher;
         private readonly IFileProcessor fileProcessor;
 
         // Constructor supporting dependency injection. Defaults keep previous behavior.
-        public CliHandler(IDesCipher? desCipher = null, IKeyScheduler? keyScheduler = null, IFileProcessor? fileProcessor = null)
+        public CliHandler(IDesCipher? desCipher = null, IFileProcessor? fileProcessor = null)
         {
             this.desCipher = desCipher ?? new DesCipher();
             this.fileProcessor = fileProcessor ?? new FileProcessor();
         }
 
+
+        // Main method to handle CLI arguments
+        // Recognized switches:
+        // -i / --input  → input path (or - for stdin)
+        // -o / --output → output path (or - for stdout)
+        // -k / --key    → key (either a hex string or a path to a key file)
         public void Handle(string[] args)
         {
             if (args is null) args = Array.Empty<string>();
@@ -37,6 +55,7 @@ namespace DesCli
                 string? keyArg = null;
 
                 int i = 0;
+
                 // if first token is encrypt/decrypt, consume it
                 if (args.Length > 0 && (string.Equals(args[0], "encrypt", StringComparison.OrdinalIgnoreCase) ||
                                         string.Equals(args[0], "decrypt", StringComparison.OrdinalIgnoreCase)))

@@ -23,18 +23,19 @@ namespace DesCli
         {
             // Illustrative header box
             Console.WriteLine("***************************************************************");
-            Console.WriteLine("*      Data Encryption Standard (DES) Interactive Demo        *");
+            Console.WriteLine("*     Data Encryption Standard (DES) Interactive Demo         *");
             Console.WriteLine("*                                                             *");
-            Console.WriteLine("*      This application is manually coded solution of         *");
-            Console.WriteLine("*      the DES using FIPS PUB 46 and the book                 *");
-            Console.WriteLine("*      'Understanding Cryptography' by Paar, Plezl, Güneysu   *");
+            Console.WriteLine("*     This application is a manually coded solution of        *");
+            Console.WriteLine("*     the DES using FIPS PUB 46 and the 2nd Edition of the    *");
+            Console.WriteLine("*     book by Paar, Plezl and Güneysu, published in 2024:     *");
+            Console.WriteLine("*     'Understanding Cryptography'                            *");
             Console.WriteLine("*                                                             *");
-            Console.WriteLine("*      This demo                                              *");
-            Console.WriteLine("*      - asks the plaintext from the user encoded in UTF-8    *");
-            Console.WriteLine("*      - converts it to hexadecimal representation            *");
-            Console.WriteLine("*      - applies padding if necessary                         *");
-            Console.WriteLine("*      - encrypts the plaintext to ciphertext, and            *");
-            Console.WriteLine("*      - decrypts the ciphertext to plaintext again.          *");
+            Console.WriteLine("*     This demo                                               *");
+            Console.WriteLine("*     - asks the plaintext from the user encoded in UTF-8     *");
+            Console.WriteLine("*     - converts it to hexadecimal representation             *");
+            Console.WriteLine("*     - applies padding if necessary                          *");
+            Console.WriteLine("*     - encrypts the plaintext to ciphertext, and             *");
+            Console.WriteLine("*     - decrypts the ciphertext to plaintext again.           *");
             Console.WriteLine("***************************************************************");
             Console.WriteLine();
 
@@ -81,6 +82,9 @@ namespace DesCli
 
                 // Convert input text to bytes
                 var plainBytes = Encoding.UTF8.GetBytes(inputText);
+                Console.WriteLine();
+                Console.WriteLine("Electronic Code Block (ECB) + PKCS7 for padding");
+                Console.WriteLine();
 
                 // Show plaintext hex for educational purposes (grouped)
                 Console.WriteLine();
@@ -110,12 +114,16 @@ namespace DesCli
                 Console.WriteLine("Encrypted (hex, grouped):");
                 Console.WriteLine(ToGroupedHex(cipherBytes));
 
-                // --- Comparison: manual implementation vs .NET DES (same mode/padding) ---
+                // Comparison: manual implementation vs .NET DES (same mode/padding)
                 try
                 {
+                    // Use .NET DES to encrypt with same key, mode and padding
                     using var sysDes = DES.Create();
+
+                    // Set to ECB mode with PKCS#7 padding
                     sysDes.Mode = CipherMode.ECB;
                     sysDes.Padding = PaddingMode.PKCS7;
+
                     sysDes.Key = key;
 
                     var systemCipherBytes = sysDes.CreateEncryptor().TransformFinalBlock(plainBytes, 0, plainBytes.Length);
@@ -124,10 +132,9 @@ namespace DesCli
                     var systemB64 = Convert.ToBase64String(systemCipherBytes);
 
                     Console.WriteLine();
-                    Console.WriteLine("Electronic Code Block (ECB) + PKCS7 for padding");
                     Console.WriteLine("Comparison (Base64):");
 
-                    var label1 = "Encrypted data, manually coded (this application):";
+                    var label1 = "Encrypted, manually coded (this application):";
                     var label2 = "Encrypted by .NET System DES library:";
                     var label3 = "Match between the two approaches:";
                     var width = Math.Max(label1.Length, Math.Max(label2.Length, label3.Length));
