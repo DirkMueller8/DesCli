@@ -1,12 +1,11 @@
 ## Manual Coding Data Encryption Standard (DES)
 ***********************************************
-Software: &emsp;	C# 12 / .NET8
+|:----------|:---------------------|
+| Software: | C# 12 / .NET8        |
+| Version:  | 1.0                  |
+| Date: 	| Nov 4, 2025          |
+| Author:	| Dirk Mueller         |  
 
-Version: &emsp;   	1.0
-
-Date: 	&emsp;		Nov 4, 2025
-
-Author:	&emsp;		Dirk Mueller
 ************************************************
 
 ### Introduction ###
