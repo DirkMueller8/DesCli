@@ -1,11 +1,12 @@
 ## Manual Coding Data Encryption Standard (DES)
 ***********************************************
-|:----------|:---------------------|  
-| Software: | C# 12 / .NET8        |  
-| Version:  | 1.0                  |  
-| Date: 	| Nov 4, 2025          |  
-| Author:	| Dirk Mueller         |  
+Software: &emsp;	C# 12 / .NET8
 
+Version: &emsp;   	1.0
+
+Date: 	&emsp;		Nov 4, 2025
+
+Author:	&emsp;		Dirk Mueller
 ************************************************
 
 ### Introduction ###
@@ -13,7 +14,11 @@ This is a console C# application for taking a text from file of via the command
 line as an input for encryption by the Data Encryption Standard (DES) algorithm.
 The encrypted data is shown, and lastly the decryption is performed.
 
-The algorithm uses PKCS#7 padding padding to 16 bytes (DES needs 8-byte blocks) before teh initial permutation. No salt or initialization vector is used.
+The algorithm uses PKCS#7 padding padding to 16 bytes (DES needs 8-byte blocks) before the initial permutation. No salt or initialization vector is used.
+
+The algorithm is schematically described by the following block diagram:  
+
+![Alt text](/Images/DES_Diagram.png) 
 
 ### Architecture of Application ###  
 The modular architecture is implemented from the following hierarchy:  
