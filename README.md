@@ -1,5 +1,5 @@
-## Manual Coding a Data Encryption Standard (DES) App
-*****************************************************
+## Manual Coding Data Encryption Standard (DES)
+***********************************************
 Software:	&emsp;	C# 12 / .NET8
 
 Version: &emsp;   	1.0
@@ -7,7 +7,7 @@ Version: &emsp;   	1.0
 Date: 	&emsp;		Nov 4, 2025
 
 Author:	&emsp;		Dirk Mueller
-**********************************************
+************************************************
 
 ### Introduction ###
 This is a console C# application for taking a text from file of via the command
@@ -19,23 +19,23 @@ It uses PKCS#7 padding padding to 16 bytes (DES needs 8-byte blocks). No salt or
 ### Architecture of Application ###  
 The modular architecture is implemented from the following hierarchy:  
 
-├── CliHandler (parse args, route to logic)
-│   ├── IDesCipher
-│   │   └── DesCipher
-│   │        ├── Encrypt(byte[] plaintext, byte[] key): byte[]
-│   │        ├── Decrypt(byte[] ciphertext, byte[] key): byte[]
-│   │        ├── InitialPermutation(byte[] block): byte[]
-│   │        ├── FinalPermutation(byte[] block): byte[]
-│   │        ├── Feistel(byte[] right, byte[] subkey): byte[]
-│   │        └── SBoxSubstitution(byte[] input): byte[]
-│   │   
-│   ├── IKeyScheduler
-│   │   └── DesKeyScheduler
-│   │        ├── GenerateRoundKeys(byte[] key): byte[][]
-│   │
-│   └── IFileProcessor
-│        ├── ReadInput(string path): byte[]
-│        └── WriteOutput(string path, byte[] data)
+├── CliHandler (parse args, route to logic)  
+│   ├── IDesCipher  
+│   │   └── DesCipher  
+│   │        ├── Encrypt(byte[] plaintext, byte[] key): byte[]  
+│   │        ├── Decrypt(byte[] ciphertext, byte[] key): byte[]  
+│   │        ├── InitialPermutation(byte[] block): byte[]  
+│   │        ├── FinalPermutation(byte[] block): byte[]  
+│   │        ├── Feistel(byte[] right, byte[] subkey): byte[]  
+│   │        └── SBoxSubstitution(byte[] input): byte[]  
+│   │     
+│   ├── IKeyScheduler  
+│   │   └── DesKeyScheduler  
+│   │        ├── GenerateRoundKeys(byte[] key): byte[][]  
+│   │  
+│   └── IFileProcessor  
+│        ├── ReadInput(string path): byte[]  
+│        └── WriteOutput(string path, byte[] data)  
 
 ### Why this design is flexible and maintainable ###  
 - Dependency Injection (Dependency Inversion)
