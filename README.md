@@ -1,4 +1,4 @@
-## Manual Coding Data Encryption Standard (DES)
+## Manually Coded Data Encryption Standard (DES)
 ***********************************************
 Software: &emsp;	C# 12 / .NET8
 
