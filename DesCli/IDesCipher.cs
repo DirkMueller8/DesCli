@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace DesCli
 {
+    // Interface used to decouple the CLI and tests from a concrete cipher implementation:
+    // it enables dependency injection, easy mocking for unit tests,
+    // and swapping algorithms (DES -> AES) without changing callers.
     public interface IDesCipher
     {
         byte[] Encrypt(byte[] plaintext, byte[] key);

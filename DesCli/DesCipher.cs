@@ -112,6 +112,7 @@ namespace DesCli
             {2,1,14,7,4,10,8,13,15,12,9,0,3,5,6,11}
         };
 
+
         // Encrypts the given plaintext using DES with the provided key
         public byte[] Encrypt(byte[] plaintext, byte[] key)
         {
@@ -269,6 +270,7 @@ namespace DesCli
             return result;
         }
 
+
         public byte[] InitialPermutation(byte[] block)
         {
             if (block is null)
@@ -294,6 +296,7 @@ namespace DesCli
             return output;
         }
 
+
         public byte[] FinalPermutation(byte[] block)
         {
             {
@@ -318,6 +321,7 @@ namespace DesCli
                 return output;
             }
         }
+
 
         public byte[] Feistel(byte[] right, byte[] subkey)
         {
@@ -360,6 +364,7 @@ namespace DesCli
 
             return output;
         }
+
 
         public byte[] SBoxSubstitution(byte[] input)
         {
